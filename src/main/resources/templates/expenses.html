@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head></head>
+<body>
+<div layout:fragment="contents">
+    <a id="add_expense" th:href="@{/newexpense}">Add a new expense</a>
+    <section class="expenseList">
+        <h2>My Expenses</h2>
+        <p id="no_expenses" th:if="${#lists.isEmpty(expenses) or nett==zero}">You don't have any expenses!</p>
+        <table th:unless="${#lists.isEmpty(expenses)}">
+            <thead>
+                <tr>
+                    <th><u>When</u></th>
+                    <th><u>What</u></th>
+                    <th><u>Amount Spent</u></th>
+                    <th><u>Payments Requested</u></th>
+                    <th><u>Payments Received</u></th>
+                    <th><u>Nett Expense</u></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="expense: ${expenses}">
+                    <td th:id="'date_' + ${expense.id}" th:text="${expense.date}"></td>
+                    <td><a th:id="'payment_request_' + ${expense.id}" th:href="'/paymentrequest?expenseId=' + ${expense.id}" th:text="${expense.description}"></a></td>
+                    <td th:id="'amount_' + ${expense.id}" th:text="${expense.amount}"></td>
+                    <td th:id="'request_' + ${expense.id}" th:text="${expense.totalAmountOfPaymentsRequested}"></td>
+                    <td th:id="'received_' + ${expense.id}" th:text="${expense.totalAmountForPaymentsReceived}"></td>
+                    <td th:id="'nett_' + ${expense.id}" th:text="${expense.amountLessPaymentsReceived}"></td>
+                    <td th:id="'description_' + ${expense.id}" style="visibility:hidden;"><a th:href="'/paymentrequest?expenseId=' + ${expense.id}" th:text="${expense.description}"></a></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><b>Total Expenses</b></td>
+                    <td id="grand_total" th:text="${nett}"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+</div>
+</body>
+
+</html>

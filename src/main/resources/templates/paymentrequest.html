@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head></head>
+<body>
+<div layout:fragment="contents">
+    <h2>Submit a payment request for the following expense</h2>
+    <table th:if="${expense != null}">
+        <tr>
+            <td>Date</td>
+            <td id="expense_date" th:text="${expense.getDate}"></td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td id="expense_description" th:text="${expense.getDescription}"></td>
+        </tr>
+        <tr>
+            <td>Amount</td>
+            <td id="expense_amount" th:text="${expense.getAmount}"></td>
+        </tr>
+    </table>
+    <br>
+    <section th:unless="${#lists.isEmpty(payments)}">
+        <h2>Previous payments request for this expense</h2>
+        <table>
+            <tr>
+                <th><u>Who</u></th>
+                <th><u>Due</u></th>
+                <th><u>Paid?</u></th>
+                <th><u>How Much</u></th>
+            </tr>
+            <tr th:each="payment: ${payments}">
+                <td th:id="'paymentrequest_who_' + ${payment.id}" th:text="${payment.getPersonWhoShouldPayBack.getName}"></td>
+                <td th:id="'paymentrequest_date_' + ${payment.id}" th:text="${payment.getDueDate}"></td>
+                <td th:id="'paymentrequest_paid_' + ${payment.id}" th:text="${payment.isPaid}"></td>
+                <td th:id="'paymentrequest_amount_' + ${payment.id}" th:text="${payment.getAmountToPay}"></td>
+            </tr>
+        </table>
+    </section>
+    <br>
+    <form method="post" th:action="'/paymentrequest.action?expenseId='+${expense.id}" enctype="application/x-www-form-urlencoded">
+        <label for="email">Email address of payee</label>
+        <input name="email" id="email" autofocus required>
+        <label for="amount">The amount they should pay you (maximum R10000.00!)</label>
+        <input name="amount" id="amount" autofocus required>
+        <label for="due_date">when should this claim be settled (dd/mm/yyyy)</label>
+        <input name="due_date" id="due_date" autofocus required>
+        <input id="expense_id" style="visibility:hidden;">
+
+        <input id="submit" type="submit" value="Submit"/>
+    </form>
+</div>
+</body>
+
+</html>

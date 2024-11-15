@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{/layout.html}">
+<head></head>
+<body>
+<div layout:fragment="contents">
+    <section class="expenseList">
+        <h2>People that owe me</h2>
+        <p id="no_payment_requests_received" th:if="${#lists.isEmpty(payments)}">You don't owe anyone anything!</p>
+        <table th:if="${#lists.size(payments) > 0}">
+            <thead>
+                <tr>
+                    <th><u>Who</u></th>
+                    <th><u>What</u></th>
+                    <th><u>Due In (days)</u></th>
+                    <th><u>How Much</u></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="payment: ${payments}">
+                    <td th:text="${payment.getPersonRequestingPayment.getName}"></td>
+                    <td th:text="${payment.getDescription}"></td>
+                    <td th:text="${payment.daysLeftToPay}"></td>
+                    <td th:text="${payment.getAmountToPay}"></td>
+                    <td th:unless="${payment.isPaid}">
+                        <form method="post" action="/payment.action" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" id="paymentId" name="paymentId" th:value="${payment.getId}">
+                            <input type="submit" value="Pay">
+                        </form>
+                    </td>
+                    <td th:if="${payment.isPaid}">
+                        <input
+                                th:id="${#ids.seq('paid_')}"
+                                type="checkbox"
+                                checked disabled
+                        >
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Total Unpaid</td>
+                    <td id="grand_total" th:text="${total_unpaid}"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+</div>
+</body>
+
+</html>
